@@ -1,7 +1,8 @@
-package com.q.cupid.models // Thay thế bằng package của bạn
+package com.q.cupid.models
 
 data class Chat(
-    val chatId: String = "", // ID của cuộc trò chuyện
-    val userIds: List<String> = emptyList() // Danh sách UID của những người dùng tham gia cuộc trò chuyện
-    // ... các thuộc tính khác (ví dụ: lastMessage, timestamp, ...)
+    val chatId: String = "",
+    val userIds: List<String> = emptyList(),
+    var combinedUserIds: String = "",
+    val timestamp: Long = System.currentTimeMillis() // Thêm trường timestamp
 )
