@@ -1,0 +1,30 @@
+{
+  "project_info": {
+    "project_number": "729327078986",
+    "firebase_url": "https://cupid-a1639-default-rtdb.asia-southeast1.firebasedatabase.app",
+    "project_id": "cupid-a1639",
+    "storage_bucket": "cupid-a1639.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:729327078986:android:bb7d8b8ab75828bc2720b3",
+        "android_client_info": {
+          "package_name": "com.q.cupid"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDuH4O5Kw1Y4V3sTetxOFku7VxVVQAorzc"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
