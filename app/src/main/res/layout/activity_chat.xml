@@ -18,21 +18,23 @@
             android:orientation="horizontal"
             android:gravity="center_vertical">
 
+            <de.hdodenhof.circleimageview.CircleImageView
+                android:id="@+id/ivPartnerAvatar"
+                android:layout_width="40dp"
+                android:layout_height="40dp"
+                android:src="@drawable/default_avatar"
+                app:civ_border_width="2dp"
+                app:civ_border_color="#FF000000"
+                android:layout_marginEnd="8dp"/>
+
             <TextView
                 android:id="@+id/tvPartnerName"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="Tên người dùng"
                 android:textSize="18sp" />
-
-            <TextView
-                android:id="@+id/tvPartnerStatus"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="8dp"
-                android:text="Offline"
-                android:textSize="14sp" />
         </LinearLayout>
+
     </androidx.appcompat.widget.Toolbar>
 
     <androidx.recyclerview.widget.RecyclerView

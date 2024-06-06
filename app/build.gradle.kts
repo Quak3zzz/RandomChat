@@ -52,7 +52,7 @@ android {
 
 dependencies {
 
-
+    implementation ("de.hdodenhof:circleimageview:3.1.0")
     implementation("com.google.firebase:firebase-firestore-ktx")
     implementation("androidx.appcompat:appcompat:1.7.0")
     implementation ("com.github.bumptech.glide:glide:4.16.0")

@@ -8,10 +8,27 @@
 
     <ImageView
         android:layout_width="match_parent"
-        android:layout_height="350dp"
+        android:layout_height="50dp"
         android:background="@color/colorSecondary"
-        android:src="@drawable/undraw_couple_love"
         />
+
+
+    <ImageView
+        android:id="@+id/ivProfileImage"
+        android:layout_width="100dp"
+        android:layout_height="100dp"
+        android:layout_marginLeft="155dp"
+        android:layout_marginTop="90dp"
+        android:layout_marginRight="155dp"
+        android:src="@drawable/default_avatar" />
+
+    <Button
+        android:layout_marginLeft="150dp"
+        android:layout_marginRight="150dp"
+        android:id="@+id/btnChooseImage"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="Chọn ảnh" />
 
     <EditText
         android:layout_marginTop="20dp"
