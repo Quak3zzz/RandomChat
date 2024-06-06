@@ -1,8 +1,8 @@
 package com.q.cupid.models
 
 data class Message(
-    val messageId: String, // Thêm messageId
-    val senderId: String,
-    val text: String,
-    val timestamp: Long
+    var messageId: String = "",
+    var senderId: String = "",
+    var text: String = "",
+    var timestamp: Long = 0L
 )

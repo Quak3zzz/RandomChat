@@ -21,3 +21,6 @@
 #-renamesourcefileattribute SourceFile
 -keep class com.google.firebase.firestore.** { *; }
 -dontwarn com.google.firebase.firestore.**
+-keepclassmembers class com.q.cupid.models.Message {
+    public <init>();
+}

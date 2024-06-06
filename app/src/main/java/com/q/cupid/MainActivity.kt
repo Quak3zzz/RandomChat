@@ -35,6 +35,8 @@ class MainActivity : AppCompatActivity() {
     private lateinit var userAdapter: UserAdapter
     private var userDocRef: DocumentReference? = null
     private lateinit var connectivityManager: ConnectivityManager
+
+    // NetworkCallback để lắng nghe thay đổi kết nối mạng
     private val networkCallback = object : ConnectivityManager.NetworkCallback() {
         override fun onAvailable(network: Network) {
             updateOnlineStatus(true)
@@ -51,7 +53,7 @@ class MainActivity : AppCompatActivity() {
 
         // Khởi tạo các thành phần giao diện
         tvUserName = findViewById(R.id.tvUserName)
-        rvChatList = findViewById(R.id.rvChatList) // Đảm bảo ID của RecyclerView là rvMessages
+        rvChatList = findViewById(R.id.rvChatList)
         btnStartRandomChat = findViewById(R.id.btnStartRandomChat)
 
         // Khởi tạo các biến khác
@@ -70,7 +72,7 @@ class MainActivity : AppCompatActivity() {
         rvChatList.adapter = userAdapter
         rvChatList.layoutManager = LinearLayoutManager(this)
 
-        // Đăng ký NetworkCallback để lắng nghe thay đổi kết nối mạng
+        // Đăng ký NetworkCallback
         connectivityManager.registerNetworkCallback(NetworkRequest.Builder().build(), networkCallback)
 
         // Lắng nghe danh sách người dùng online (loại trừ người dùng hiện tại)
@@ -99,7 +101,7 @@ class MainActivity : AppCompatActivity() {
                     val newUser = User(uid, name = currentUser.displayName ?: "Unknown", email = currentUser.email, isOnline = true)
                     userDocRef?.set(newUser)
                 } else {
-                    updateOnlineStatus(true) // Cập nhật trạng thái online khi người dùng đăng nhập
+                    updateOnlineStatus(true)
                 }
             }?.addOnFailureListener { e ->
                 Log.e("MainActivity", "Error getting or creating user document", e)
@@ -120,6 +122,7 @@ class MainActivity : AppCompatActivity() {
             }
         }
 
+        // Xử lý sự kiện click vào nút "Bắt đầu chat ngẫu nhiên"
         btnStartRandomChat.setOnClickListener {
             findRandomUser()
         }
@@ -127,14 +130,15 @@ class MainActivity : AppCompatActivity() {
 
     override fun onStart() {
         super.onStart()
-        updateOnlineStatus(true) // Cập nhật trạng thái online khi ứng dụng được mở lại
+        updateOnlineStatus(true)
     }
 
     override fun onStop() {
         super.onStop()
-        connectivityManager.unregisterNetworkCallback(networkCallback) // Hủy đăng ký listener
+        connectivityManager.unregisterNetworkCallback(networkCallback)
     }
 
+    // Tìm kiếm người dùng ngẫu nhiên
     private fun findRandomUser() {
         firestore.collection("users")
             .whereEqualTo("isOnline", true)
@@ -157,6 +161,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
+    // Tạo phòng chat mới
     private fun createChatRoom(partnerUid: String) {
         val chatId = firestore.collection("chats").document().id
         val chatData = hashMapOf(
@@ -178,7 +183,7 @@ class MainActivity : AppCompatActivity() {
             }
     }
 
-
+    // Cập nhật trạng thái online/offline của người dùng
     private fun updateOnlineStatus(isOnline: Boolean) {
         userDocRef?.update("isOnline", isOnline)
             ?.addOnSuccessListener {

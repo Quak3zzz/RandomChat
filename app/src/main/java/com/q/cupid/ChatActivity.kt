@@ -21,40 +21,44 @@ import java.util.*
 
 class ChatActivity : AppCompatActivity() {
 
-    private lateinit var messageAdapter: MessageAdapter
-    private lateinit var firestore: FirebaseFirestore
-    private lateinit var auth: FirebaseAuth
-    private lateinit var chatId: String
-    private lateinit var partnerUser: User
+    // Khai báo các thành phần giao diện
     private lateinit var rvMessages: RecyclerView
     private lateinit var etMessage: EditText
     private lateinit var btnSendMessage: Button
     private lateinit var tvPartnerName: TextView
-    private lateinit var tvPartnerStatus: TextView // Thêm TextView để hiển thị trạng thái
+    private lateinit var tvPartnerStatus: TextView
+
+    // Khai báo các biến khác
+    private lateinit var messageAdapter: MessageAdapter
+    private lateinit var firestore: FirebaseFirestore
+    private lateinit var auth: FirebaseAuth
+    private lateinit var chatId: String
+    private lateinit var partnerUid: String
+    private lateinit var partnerUser: User
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_chat)
 
-        firestore = Firebase.firestore
-        auth = FirebaseAuth.getInstance()
-
+        // Khởi tạo các thành phần giao diện
         rvMessages = findViewById(R.id.rvMessages)
         etMessage = findViewById(R.id.etMessage)
         btnSendMessage = findViewById(R.id.btnSendMessage)
         tvPartnerName = findViewById(R.id.tvPartnerName)
-        tvPartnerStatus = findViewById(R.id.tvPartnerStatus) // Thay thế bằng ID của TextView trạng thái
+        tvPartnerStatus = findViewById(R.id.tvPartnerStatus)
 
+        // Khởi tạo các biến khác
+        firestore = Firebase.firestore
+        auth = FirebaseAuth.getInstance()
         chatId = intent.getStringExtra("chatId") ?: ""
-        val partnerUid = intent.getStringExtra("partnerUid") ?: ""
+        partnerUid = intent.getStringExtra("partnerUid") ?: ""
 
         messageAdapter = MessageAdapter(auth.currentUser!!.uid)
         rvMessages.adapter = messageAdapter
         rvMessages.layoutManager = LinearLayoutManager(this)
 
-        // Lắng nghe tin nhắn mới và thông tin người dùng
-        firestore.collectionGroup("messages")
-            .whereEqualTo("chatId", chatId)
+        // Lắng nghe tin nhắn mới
+        firestore.collection("chats").document(chatId).collection("messages")
             .orderBy("timestamp")
             .addSnapshotListener { snapshot, exception ->
                 if (exception != null) {
@@ -65,32 +69,22 @@ class ChatActivity : AppCompatActivity() {
                 if (snapshot != null) {
                     val messages = snapshot.toObjects(Message::class.java)
                     messageAdapter.submitList(messages)
-                    rvMessages.scrollToPosition(messages.size - 1)
+                    rvMessages.scrollToPosition(messages.size - 1) // Cuộn đến tin nhắn mới nhất
+                }
+            }
 
-                    // Lấy thông tin người dùng đang chat cùng (chỉ thực hiện một lần)
-                    if (!::partnerUser.isInitialized) {
-                        val firstMessage = messages.firstOrNull()
-                        if (firstMessage != null) {
-                            val partnerUid = if (firstMessage.senderId == auth.currentUser!!.uid) {
-                                snapshot.documents.first { it.id == chatId }.getString("user2")
-                            } else {
-                                firstMessage.senderId
-                            }
-                            firestore.collection("users").document(partnerUid!!)
-                                .addSnapshotListener { userSnapshot, e ->
-                                    if (e != null) {
-                                        Log.w("ChatActivity", "Listen user failed.", e)
-                                        return@addSnapshotListener
-                                    }
+        // Lấy thông tin người dùng đang chat cùng và lắng nghe trạng thái online/offline
+        firestore.collection("users").document(partnerUid)
+            .addSnapshotListener { snapshot, e ->
+                if (e != null) {
+                    Log.w("ChatActivity", "Listen user failed.", e)
+                    return@addSnapshotListener
+                }
 
-                                    if (userSnapshot != null && userSnapshot.exists()) {
-                                        partnerUser = userSnapshot.toObject(User::class.java)!!
-                                        tvPartnerName.text = partnerUser.name
-                                        tvPartnerStatus.text = if (partnerUser.isOnline) "Online" else "Offline"
-                                    }
-                                }
-                        }
-                    }
+                if (snapshot != null && snapshot.exists()) {
+                    partnerUser = snapshot.toObject(User::class.java)!!
+                    tvPartnerName.text = partnerUser.name
+                    tvPartnerStatus.text = if (partnerUser.isOnline) "Online" else "Offline"
                 }
             }
 
